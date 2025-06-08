@@ -1,7 +1,5 @@
-import jdk.dynalink.Operation;
-
+import java.util.ArrayList;
 import java.security.SecureRandom;
-import javax.crypto.spec.OAEPParameterSpec;
 import javax.swing.JOptionPane;
 
 public class MathQuestions {
@@ -119,10 +117,10 @@ public class MathQuestions {
     }
 
     private static void setNewQuestion () {
-        number1 = 1 + randomize.nextInt((int)Math.pow(10,bound));
-        number2 = 1 + randomize.nextInt((int)Math.pow(10,bound));
 
         operator_being_used = setOperator();
+        number1 = (operator_being_used != '/') ? 1 + randomize.nextInt((int)Math.pow(10,bound)) : getDividend();
+        number2 = (operator_being_used != '/') ? 1 + randomize.nextInt((int)Math.pow(10,bound)) : getDivisor(number1);
 
         switch (operator_being_used) {
             case '+':
@@ -137,6 +135,50 @@ public class MathQuestions {
             case '/':
                 answer = (int) number1 / number2;
             break;
+        }
+    }
+
+    private static int getDividend () {
+
+        int dividend, is_prime;
+
+        do {
+            dividend = randomize.nextInt((int)Math.pow(10,bound));
+            is_prime = 0;
+
+            for (int i = 1; i <= 3; i++) {
+                if (dividend % i == 0) {
+                    is_prime++;
+                }
+            }
+
+        }
+
+        while (is_prime == 1);
+
+        return dividend;
+    }
+
+    private static int getDivisor (int dividend) {
+
+        ArrayList<Integer> dividend_factors = new ArrayList<>();
+        int divisor = 0;
+
+        getDividendFactors (dividend_factors,dividend);
+        divisor = dividend_factors.get(randomize.nextInt(dividend_factors.size()));
+
+        dividend_factors.clear();
+
+        return divisor;
+    }
+
+    private static void getDividendFactors (ArrayList<Integer> dividend_factors, int dividend) {
+
+        for (int i = 2; i <= (dividend/2); i++) {
+
+            if (dividend % i == 0) {
+                dividend_factors.add(i);
+            }
         }
     }
 
